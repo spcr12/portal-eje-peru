@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal EJE - Expediente Judicial Electrónico | Poder Judicial del Perú</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Google Fonts para tipografía moderna -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- ================= 2. PANTALLA DE CARGA (SPLASH SCREEN) ================= -->
+    <div id="splash-screen" class="splash-screen">
+        <div class="splash-content">
+            <!-- Logo vectorizado de Temis -->
+            <svg class="splash-temis-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1"/>
+            </svg>
+            <h2>Portal EJE - Perú</h2>
+            <p id="splash-text">Cargando Portal EJE...</p>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 3. MODALES DE AVISO ================= -->
+    <!-- Modal 1: Prototipo Académico -->
+    <div id="modal-academico" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-icon">⚖️</div>
+            <h3 data-i18n="modal1_title">Aviso de Prototipo Académico</h3>
+            <p data-i18n="modal1_desc">Este es un prototipo académico de demostración. No es un sistema oficial del Poder Judicial del Perú.</p>
+            <div class="modal-checkbox">
+                <input type="checkbox" id="no-mostrar-nuevamente">
+                <label for="no-mostrar-nuevamente" data-i18n="modal1_check">No volver a mostrar</label>
+            </div>
+            <button class="btn-primary" onclick="cerrarModalAcademico()" data-i18n="modal1_btn">Entendido</button>
+        </div>
+    </div>
+
+    <!-- Modal 2: Ley de Protección de Datos -->
+    <div id="modal-datos" class="modal-overlay" style="display: none;">
+        <div class="modal-card">
+            <div class="modal-icon">🔒</div>
+            <h3 data-i18n="modal2_title">Protección de Datos Personales (Ley N° 29733)</h3>
+            <p data-i18n="modal2_desc">La información contenida en este expediente está protegida por la Ley de Protección de Datos Personales. Los nombres y documentos se muestran parcialmente enmascarados para salvaguardar la privacidad de las partes.</p>
+            <a href="#" class="modal-link" data-i18n="modal2_link">Ver marco legal completo</a>
+            <button class="btn-primary" onclick="aceptarDatosProtegidos()" data-i18n="modal2_btn" style="margin-top: 15px;">Acepto y Continuar</button>
+        </div>
+    </div>
+
+    <!-- ================= 1. BARRA HORIZONTAL SUPERIOR (NAVBAR) ================= -->
+    <header class="main-header">
+        <div class="header-left">
+            <!-- Logo vectorizado de Temis en Navbar -->
+            <svg class="nav-temis-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="brand-title">EJE <small>Perú</small></span>
+        </div>
+
+        <!-- Navegación Principal Horizontal (Sin barra lateral) -->
+        <nav class="nav-menu">
+            <a href="#inicio" class="nav-link active" onclick="switchTab('inicio')" data-i18n="nav_inicio">Inicio</a>
+            <a href="#expedientes" class="nav-link" onclick="switchTab('expedientes')" data-i18n="nav_expedientes">Expedientes</a>
+            <a href="#consultas" class="nav-link" onclick="switchTab('consultas')" data-i18n="nav_consultas">Interoperabilidad</a>
+            <a href="#notificaciones" class="nav-link" onclick="switchTab('notificaciones')" data-i18n="nav_notificaciones">Notificaciones</a>
+            <a href="#perfil" class="nav-link" onclick="switchTab('perfil')" data-i18n="nav_perfil">Perfil</a>
+        </nav>
+
+        <div class="header-right">
+            <!-- Fecha y Hora Dinámica -->
+            <div id="live-clock" class="live-clock">--/--/---- --:--:--</div>
+
+            <!-- Selector de Idiomas -->
+            <select id="language-selector" class="lang-selector" onchange="changeLanguage(this.value)">
+                <option value="es">🇪🇸 Español</option>
+                <option value="en">🇬🇧 English</option>
+                <option value="qu">🇵🇪 Quechua</option>
+            </select>
+
+            <!-- Usuario Logueado y Cerrar Sesión -->
+            <div class="user-profile-badge">
+                <span class="user-name">Dr. J. Espinoza</span>
+                <button class="btn-logout" onclick="alert('Sesión cerrada correctamente.')" title="Cerrar sesión">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ================= CONTENIDO PRINCIPAL (DASHBOARD) ================= -->
+    <main class="dashboard-container">
+
+        <!-- VISTA 1: INICIO / EXPEDIENTE PRINCIPAL -->
+        <section id="tab-inicio" class="tab-content active">
+            <div class="welcome-banner">
+                <div>
+                    <h1 data-i18n="welcome_title">Portal de Expediente Judicial Electrónico</h1>
+                    <p data-i18n="welcome_subtitle">Sistema de gestión procesal del Poder Judicial - Distrito Judicial de Puno</p>
+                </div>
+                <div class="expediente-quick-badge">
+                    <span class="badge-label" data-i18n="exp_active_label">Expediente Activo:</span>
+                    <strong id="header-exp-num">00174-2019-0-2111-JR-LA-02</strong>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <!-- Tarjeta de Datos del Expediente -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 data-i18n="card_details_title">📋 Datos Básicos del Proceso</h3>
+                        <span class="status-badge resuelto" data-i18n="status_resuelto">RESUELTO</span>
+                    </div>
+                    <div class="card-body">
+                        <ul class="info-list">
+                            <li><strong data-i18n="lbl_nro">N° Expediente:</strong> <span class="masked-text">00174-2019-0-2111-JR-LA-02</span></li>
+                            <li><strong data-i18n="lbl_materia">Materia:</strong> Desnaturalización de Contrato</li>
+                            <li><strong data-i18n="lbl_juzgado">Juzgado:</strong> Mixto de Juliaca</li>
+                            <li><strong data-i18n="lbl_especialidad">Especialidad:</strong> Laboral</li>
+                            <li><strong data-i18n="lbl_ingreso">Fecha Ingreso:</strong> 26/06/2019</li>
+                        </ul>
+                        <div class="action-buttons">
+                            <button class="btn-secondary" onclick="abrirVisorExpediente()" data-i18n="btn_visualizar">👁️ Visualizar Expediente</button>
+                            <button class="btn-secondary" onclick="imprimirExpediente()" data-i18n="btn_imprimir">🖨️ Imprimir / PDF</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta de Partes Procesales (Con datos protegidos/enmascarados) -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 data-i18n="card_parties_title">👥 Partes Procesales (Datos Protegidos)</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="party-box">
+                            <h4 data-i18n="party_demandante">DEMANDANTE</h4>
+                            <p><strong>Nombres:</strong> <span class="masked-privacy">SU** QU**** AN**** L******</span></p>
+                            <p><strong>DNI:</strong> <span class="masked-privacy">021*****</span></p>
+                        </div>
+                        <div class="party-box" style="margin-top: 12px;">
+                            <h4 data-i18n="party_demandado">DEMANDADO</h4>
+                            <p><strong>Entidad:</strong> ESSALUD RED ASISTENCIAL JULIACA</p>
+                            <p><strong>RUC:</strong> <span class="masked-privacy">20XXXXXXXXX</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de Documentos y Descargas de Carpeta ZIP -->
+            <div class="card full-width" style="margin-top: 20px;">
+                <div class="card-header">
+                    <h3 data-i18n="docs_section_title">📁 Documentos y Anexos del Expediente</h3>
+                    <button class="btn-primary-sm" onclick="simularDescargaZip()" data-i18n="btn_download_zip">📦 Descargar Carpeta ZIP</button>
+                </div>
+                <div class="card-body">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th data-i18n="th_doc">Documento</th>
+                                <th data-i18n="th_autor">Autor / Emisor</th>
+                                <th data-i18n="th_fecha">Fecha</th>
+                                <th data-i18n="th_acciones">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="documentos-table-body">
+                            <!-- Inyectado vía JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA 2: EXPEDIENTES (Buscador y Listado) -->
+        <section id="tab-expedientes" class="tab-content" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <h3 data-i18n="exp_search_title">🔍 Búsqueda y Gestión de Expedientes</h3>
+                </div>
+                <div class="card-body">
+                    <div class="search-bar-container">
+                        <input type="text" id="input-buscar-exp" placeholder="Ingrese N° de Expediente o DNI..." class="form-input">
+                        <button class="btn-primary" onclick="buscarExpediente()" data-i18n="btn_search">Buscar</button>
+                    </div>
+                    <div id="resultado-busqueda" style="margin-top: 20px;">
+                        <p class="text-muted" data-i18n="search_hint">Ingrese un criterio para consultar expedientes en el sistema EJE.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA 3: MÓDULO DE INTEROPERABILIDAD -->
+        <section id="tab-consultas" class="tab-content" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <h3 data-i18n="interop_title">🌐 Módulo de Consultas de Interoperabilidad (Estado Peruano)</h3>
+                </div>
+                <div class="card-body">
+                    <!-- Tabs de Interoperabilidad -->
+                    <div class="interop-tabs">
+                        <button class="interop-tab-btn active" onclick="switchInteropTab('reniec', event)">RENIEC</button>
+                        <button class="interop-tab-btn" onclick="switchInteropTab('inpe', event)">INPE</button>
+                        <button class="interop-tab-btn" onclick="switchInteropTab('pnp', event)">PNP</button>
+                        <button class="interop-tab-btn" onclick="switchInteropTab('migraciones', event)">MIGRACIONES</button>
+                    </div>
+
+                    <!-- Contenedor de Consultas -->
+                    <div class="interop-content-box">
+                        <div class="search-bar-container">
+                            <input type="text" id="interop-input" placeholder="Ingrese N° de Documento (DNI / Pasaporte)..." class="form-input">
+                            <button class="btn-primary" onclick="ejecutarConsultaInterop()" data-i18n="btn_consultar">Consultar API</button>
+                        </div>
+
+                        <!-- Spinner de carga -->
+                        <div id="interop-loader" class="interop-loader" style="display: none;">
+                            <div class="spinner"></div>
+                            <p data-i18n="interop_loading">Consultando servicios de interoperabilidad del Estado...</p>
+                        </div>
+
+                        <!-- Resultado de Interoperabilidad -->
+                        <div id="interop-result" class="interop-result-card" style="display: none;">
+                            <!-- Dinámico -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA 4: NOTIFICACIONES -->
+        <section id="tab-notificaciones" class="tab-content" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <h3 data-i18n="notif_title">📬 Casilla Electrónica y Notificaciones</h3>
+                </div>
+                <div class="card-body">
+                    <ul class="notification-list">
+                        <li>
+                            <span class="notif-date">27/06/2019</span>
+                            <div class="notif-details">
+                                <strong>Admisión de Demanda</strong>
+                                <p>Juzgado Mixto de Juliaca notificó la resolución N° 1.</p>
+                            </div>
+                            <span class="status-badge completado">LEÍDO</span>
+                        </li>
+                        <li>
+                            <span class="notif-date">01/07/2019</span>
+                            <div class="notif-details">
+                                <strong>Traslado de Demanda</strong>
+                                <p>Notificación enviada a la entidad demandada (ESSALUD).</p>
+                            </div>
+                            <span class="status-badge completado">LEÍDO</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA 5: PERFIL -->
+        <section id="tab-perfil" class="tab-content" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <h3 data-i18n="profile_title">👤 Perfil del Usuario del Sistema</h3>
+                </div>
+                <div class="card-body">
+                    <div class="profile-info">
+                        <p><strong>Nombres:</strong> Jany Esperanza Espinoza Salas</p>
+                        <p><strong>Colegiatura:</strong> CAL N° 45892</p>
+                        <p><strong>Cargo / Rol:</strong> Abogado Patrocinante / Litigante</p>
+                        <p><strong>Casilla Electrónica:</strong> N° 77</p>
+                        <p><strong>Distrito Judicial:</strong> Puno</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= MODAL DE VISUALIZACIÓN DE EXPEDIENTE ================= -->
+    <div id="modal-visor" class="modal-overlay" style="display: none;">
+        <div class="modal-visor-card">
+            <div class="modal-header-bar">
+                <h3 id="visor-titulo">Visor de Documentos EJE</h3>
+                <button class="btn-close" onclick="cerrarVisorExpediente()">✕</button>
+            </div>
+            <div class="visor-toolbar">
+                <button class="btn-tool" onclick="zoomVisor(0.1)">🔍+</button>
+                <button class="btn-tool" onclick="zoomVisor(-0.1)">🔍-</button>
+                <button class="btn-tool" onclick="window.print()">🖨️️ Imprimir</button>
+                <button class="btn-tool" onclick="descargarPDFActual()">📥 Descargar PDF</button>
+                <button class="btn-tool" onclick="copiarEnlaceExpediente()">🔗 Compartir Enlace</button>
+            </div>
+            <div class="visor-body" id="visor-content-body">
+                <!-- Contenido HTML elegante del expediente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <p>Poder Judicial del Perú - Expediente Judicial Electrónico (EJE) | Prototipo Académico 2026</p>
+    </footer>
+
+    <!-- Scripts JavaScript -->
+    <script src="js/app.js"></script>
+</body>
+</html>
